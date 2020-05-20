@@ -2,7 +2,6 @@ package dao;
 
 import data.ParameterSetter;
 import data.base.IntEntityDao;
-import entities.Member;
 import entities.Transaction;
 import lombok.SneakyThrows;
 
