@@ -1,8 +1,17 @@
 package entities;
 
-public class Member {
+import entities.base.Entity;
+import lombok.Data;
+
+@Data
+public class Member extends Entity {
     private int memberId;
     private String id;
     private String password;
-    private int tragetAmount;
+    private int targetAmount;
+
+    @Override
+    public String getKeyText() {
+        return null;
+    }
 }

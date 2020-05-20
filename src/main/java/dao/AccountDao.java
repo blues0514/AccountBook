@@ -1,6 +1,14 @@
 package dao;
 
-public class AccountDao {
+import data.ParameterSetter;
+import data.base.IntEntityDao;
+import entities.Account;
+import lombok.SneakyThrows;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class AccountDao extends IntEntityDao<Account> {
     //region singleton
     private AccountDao() {
     }
@@ -13,5 +21,78 @@ public class AccountDao {
 
         return _instance;
     }
-//endregion
+    //endregion
+
+    @SneakyThrows
+    @Override
+    protected Account readEntity(ResultSet resultSet) {
+        Account entity = new Account();
+
+        entity.setAccountId(resultSet.getInt(1));
+        entity.setAccountNumber(resultSet.getInt(2));
+        entity.setMemberId(resultSet.getInt(3));
+        entity.setBank(resultSet.getString(4));
+
+        return entity;
+    }
+
+    @Override
+    protected String getCountQuery() {
+        //language=TSQL
+        return "select count(*) from Account";
+    }
+
+    @Override
+    protected String getAllQuery() {
+        //language=TSQL
+        return "select * from Account";
+    }
+
+    @Override
+    public boolean insert(Account entity) {
+        //language=TSQL
+        String query = "insert into Account values (?, ?, ?)";
+
+        return execute(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1, entity.getAccountNumber());
+                statement.setInt(2, entity.getMemberId());
+                statement.setString(3, entity.getBank());
+
+            }
+        });
+    }
+
+    @Override
+    public boolean update(Account entity) {
+        //language=TSQL
+        String query = "update Account set AccountNumber = ?, MemberId = ?, Bank = ? where AccountId = ?";
+
+        return execute(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1, entity.getAccountNumber());
+                statement.setInt(2, entity.getMemberId());
+                statement.setString(3, entity.getBank());
+                statement.setInt(4, entity.getAccountId());
+            }
+        });
+    }
+
+    @Override
+    protected String getByKeyQuery() {
+        //language=TSQL
+        return "select * from Account where AccountId = ?";
+    }
+
+    @Override
+    protected String deleteByKeyQuery() {
+        //language=TSQL
+        return "delete Account where AccountId = ?";
+    }
+
+
 }

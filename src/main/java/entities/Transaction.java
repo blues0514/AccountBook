@@ -1,15 +1,22 @@
 package entities;
 
+import entities.base.Entity;
 import lombok.Data;
 
-import java.util.Date;
+import java.sql.Date;
+
 
 @Data
-public class Transaction {
+public class Transaction extends Entity {
     private int transactionId;
     private int accountId;
     private int amount;
     private Date date;
     private String detail;
     private int transactionCategoryId;
+
+    @Override
+    public String getKeyText() {
+        return null;
+    }
 }
