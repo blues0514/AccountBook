@@ -6,7 +6,7 @@ import helpers.ConnectionString;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
+//
 public class Main {
     public static void main(String[] args) {
         ConnectionString.getInstance().initialize("jdbc:sqlserver://127.0.0.1;database=AccountBook;user=sa;password=1234");
