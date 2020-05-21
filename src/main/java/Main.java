@@ -10,5 +10,8 @@ public class Main {
         member.setPassword("1234");
         member.setTargetAmount(10000);
         MemberDao.getInstance().insert(member);
+        //
+//        하이 준형
     }
+
 }
