@@ -129,10 +129,12 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         });
     }
 
-    public ArrayList<Transaction> getByDay(int month, int startDay, int endDay) {
+    public ArrayList<Transaction> getByDay(int memeberId, int month, int startDay, int endDay) {
         //language=TSQL
-        String query = "SELECT *FROM [Transaction] WHERE MONTH(Date)=? AND " +
-                "DAY(Date)>=? and DAY(Date)<?";
+        String query = "SELECT *FROM [Transaction] t, Member m, Account a " +
+                "WHERE MONTH(Date)=? AND " +
+                "DAY(Date)>=? and DAY(Date)<? and t.AccountId=a.AccountId " +
+                "and a.MemberId=m.MemberId and m.MemberId=?";
         return getMany(query, new ParameterSetter() {
             @SneakyThrows
             @Override
@@ -140,6 +142,7 @@ public class TransactionDao extends IntEntityDao<Transaction> {
                 statement.setInt(1,month);
                 statement.setInt(2,startDay);
                 statement.setInt(3,endDay);
+                statement.setInt(4,memeberId);
             }
         });
     }
