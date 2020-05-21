@@ -12,6 +12,6 @@ public class Member extends Entity {
 
     @Override
     public String getKeyText() {
-        return null;
+        return Integer.toString(memberId);
     }
 }

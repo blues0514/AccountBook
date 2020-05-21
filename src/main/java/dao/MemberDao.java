@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Scanner;
 
 public class MemberDao extends IntEntityDao<Member> {
     //region singleton
@@ -95,7 +94,7 @@ public class MemberDao extends IntEntityDao<Member> {
         });
     }
 
-    public int login(String id, String pw) {
+    public Member login(String id, String pw) {
         //language=TSQL
         String query = "Select * from Member where Id = ?";
 
@@ -109,8 +108,7 @@ public class MemberDao extends IntEntityDao<Member> {
         String userPw = member.getPassword();
         if (!pw.equals(userPw)) {
             System.out.println("비밀번호가 일치하지 않습니다.");
-            return -1;
         }
-        return 1;
+        return member;
     }
 }

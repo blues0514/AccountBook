@@ -1,46 +1,64 @@
+import dao.AccountDao;
 import dao.MemberDao;
 import dao.TransactionDao;
+import entities.Account;
 import entities.Member;
 import entities.Transaction;
 import helpers.ConnectionString;
 
-import javax.swing.text.html.parser.Entity;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         ConnectionString.getInstance().initialize("jdbc:sqlserver://127.0.0.1;database=AccountBook;user=sa;password=1234");
+        Member member = new Member();
+        getUser(member);
+        System.out.printf("%s님 환영합니다.\n", member.getId());
 
-        String id = getName();
-        System.out.println(id);
+        ArrayList<Account> accounts = AccountDao.getInstance().getAccountNumbers(member.getMemberId());
+        for (Account account : accounts)
+            System.out.println(account);
+
 
         //수입,지출 입력
 //        insertTransaction(amount, detail, transactionCategoryId);
 
         //수입,지출 조회
 //        transactionInquiry(transactionCategoryId);
-        //
-        //
+
+
 
     }
 
-    static String getName() {
+    static Member getUser(Member member) {
         Scanner sc = new Scanner(System.in);
         boolean login = true;
-        String userId = null;
-        String userPw;
+
         while (login) {
             try {
                 System.out.println("id");
-                userId = sc.nextLine();
+                String userId = sc.nextLine();
                 System.out.println("pw");
-                userPw = sc.nextLine();
-                login = MemberDao.getInstance().login(userId, userPw) != 1;
+                String userPw = sc.nextLine();
+
+                Member loginUser = MemberDao.getInstance().login(userId, userPw);
+
+                member.setId(loginUser.getId());
+                member.setPassword(loginUser.getPassword());
+                member.setMemberId(loginUser.getMemberId());
+                member.setTargetAmount(loginUser.getTargetAmount());
+                if(member.getPassword().equals(userPw))
+                    login = false;
+
+
+
             } catch (NullPointerException e) {
                 System.out.println("존재 하지 않는 ID");
             }
+
         }
-        return userId;
+        return member;
     }
 
     static void insertTransaction(int amount, String detail, int transactionCategoryId) {
