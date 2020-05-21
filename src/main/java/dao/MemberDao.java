@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Scanner;
 
 public class MemberDao extends IntEntityDao<Member> {
     //region singleton
@@ -79,18 +80,37 @@ public class MemberDao extends IntEntityDao<Member> {
 
     @Override
     public boolean update(Member entity) {
-            //language=TSQL
-            String query = "update Member set Id = ?, Password = ?, TargetAmount = ? where MemberId = ?";
+        //language=TSQL
+        String query = "update Member set Id = ?, Password = ?, TargetAmount = ? where MemberId = ?";
 
-            return execute(query, new ParameterSetter() {
-                @SneakyThrows
-                @Override
-                public void setValue(PreparedStatement statement) {
-                    statement.setString(1, entity.getId());
-                    statement.setString(2, entity.getPassword());
-                    statement.setInt(3, entity.getTargetAmount());
-                    statement.setInt(4, entity.getMemberId());
-                }
-            });
+        return execute(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setString(1, entity.getId());
+                statement.setString(2, entity.getPassword());
+                statement.setInt(3, entity.getTargetAmount());
+                statement.setInt(4, entity.getMemberId());
+            }
+        });
+    }
+
+    public int login(String id, String pw) {
+        //language=TSQL
+        String query = "Select * from Member where Id = ?";
+
+        Member member = getOne(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement preparedStatement) {
+                preparedStatement.setString(1, id);
+            }
+        });
+        String userPw = member.getPassword();
+        if (!pw.equals(userPw)) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            return -1;
+        }
+        return 1;
     }
 }
