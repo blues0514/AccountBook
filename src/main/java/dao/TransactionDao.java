@@ -31,15 +31,17 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         return "select * from [Transaction] where TransactionId = ?";
     }
 
-    public ArrayList<Transaction> getByTransactionCategoryId(int transactionCategoryId) {
+    public ArrayList<Transaction> getByIsIncome(int isIncome) {
         //language=TSQL
-        String query = "SELECT * FROM [Transaction] WHERE TransactionCategoryId=?";
+        String query = "SELECT a.*,b.IsIncome FROM [Transaction] a,TransactionCategory b " +
+                "WHERE a.TransactionCategoryId=b.TransactionCategoryId " +
+                "and b.IsIncome =?";
 
         return getMany(query, new ParameterSetter() {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
-                statement.setInt(1,transactionCategoryId);
+                statement.setInt(1,isIncome);
             }
         });
     }
@@ -110,6 +112,34 @@ public class TransactionDao extends IntEntityDao<Transaction> {
                 statement.setString(4, entity.getDetail());
                 statement.setInt(5, entity.getTransactionCategoryId());
                 statement.setInt(6, entity.getTransactionId());
+            }
+        });
+    }
+
+    public ArrayList<Transaction> getByMonth(int month) {
+        //language=TSQL
+        String query ="SELECT * FROM [Transaction] WHERE MONTH(Date)=?";
+
+        return getMany(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1,month);
+            }
+        });
+    }
+
+    public ArrayList<Transaction> getByDay(int month, int startDay, int endDay) {
+        //language=TSQL
+        String query = "SELECT *FROM [Transaction] WHERE MONTH(Date)=? AND " +
+                "DAY(Date)>=? and DAY(Date)<?";
+        return getMany(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1,month);
+                statement.setInt(2,startDay);
+                statement.setInt(3,endDay);
             }
         });
     }
