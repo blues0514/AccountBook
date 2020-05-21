@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class AccountDao extends IntEntityDao<Account> {
     //region singleton
@@ -29,7 +30,7 @@ public class AccountDao extends IntEntityDao<Account> {
         Account entity = new Account();
 
         entity.setAccountId(resultSet.getInt(1));
-        entity.setAccountNumber(resultSet.getInt(2));
+        entity.setAccountNumber(resultSet.getString(2));
         entity.setMemberId(resultSet.getInt(3));
         entity.setBank(resultSet.getString(4));
 
@@ -57,7 +58,7 @@ public class AccountDao extends IntEntityDao<Account> {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
-                statement.setInt(1, entity.getAccountNumber());
+                statement.setString(1, entity.getAccountNumber());
                 statement.setInt(2, entity.getMemberId());
                 statement.setString(3, entity.getBank());
 
@@ -74,7 +75,7 @@ public class AccountDao extends IntEntityDao<Account> {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
-                statement.setInt(1, entity.getAccountNumber());
+                statement.setString(1, entity.getAccountNumber());
                 statement.setInt(2, entity.getMemberId());
                 statement.setString(3, entity.getBank());
                 statement.setInt(4, entity.getAccountId());
@@ -92,6 +93,19 @@ public class AccountDao extends IntEntityDao<Account> {
     protected String deleteByKeyQuery() {
         //language=TSQL
         return "delete Account where AccountId = ?";
+    }
+
+    public ArrayList<Account> getAccountNumbers(int memberId) {
+        //language=TSQL
+        String query = "Select * from Account where MemberId = ?";
+
+        return getMany(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement preparedStatement) {
+                preparedStatement.setInt(1, memberId);
+            }
+        });
     }
 
 
