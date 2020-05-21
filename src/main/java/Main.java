@@ -41,7 +41,7 @@ public class Main {
 
         //수입,지출 조회
         transactionInquiry(transactionCategoryId);
-
+        //
         //
 
     }
