@@ -16,9 +16,11 @@ public class Main {
         getUser(member);
         System.out.printf("%s님 환영합니다.\n", member.getId());
 
+        System.out.println("이용 중인 계좌");
         ArrayList<Account> accounts = AccountDao.getInstance().getAccountNumbers(member.getMemberId());
         for (Account account : accounts)
-            System.out.println(account);
+            System.out.print(account.getAccountNumber() + " ");
+
 
 
         //수입,지출 입력
