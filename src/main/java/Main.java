@@ -21,16 +21,6 @@ public class Main {
         for (Account account : accounts)
             System.out.print(account.getAccountNumber() + " ");
 
-
-
-        //수입,지출 입력
-//        insertTransaction(amount, detail, transactionCategoryId);
-
-        //수입,지출 조회
-//        transactionInquiry(transactionCategoryId);
-
-
-
     }
 
     static Member getUser(Member member) {
