@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class TransactionDao extends IntEntityDao<Transaction> {
     //region singleton
@@ -28,6 +29,19 @@ public class TransactionDao extends IntEntityDao<Transaction> {
     protected String getByKeyQuery() {
         //language=TSQL
         return "select * from [Transaction] where TransactionId = ?";
+    }
+
+    public ArrayList<Transaction> getByTransactionCategoryId(int transactionCategoryId) {
+        //language=TSQL
+        String query = "SELECT * FROM [Transaction] WHERE TransactionCategoryId=?";
+
+        return getMany(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1,transactionCategoryId);
+            }
+        });
     }
 
     @Override
@@ -66,15 +80,15 @@ public class TransactionDao extends IntEntityDao<Transaction> {
     @Override
     public boolean insert(Transaction entity) {
         //language=TSQL
-        String query = "insert into [Transaction] values (?, ?, ?, ?, ?)";
+        String query = "insert into [Transaction] values (?, ?, ?)";
 
         return execute(query, new ParameterSetter() {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
-                statement.setInt(1, entity.getAccountId());
+//                statement.setInt(1, entity.getAccountId());
                 statement.setInt(2, entity.getAmount());
-                statement.setDate(3, entity.getDate());
+//                statement.setDate(3, entity.getDate());
                 statement.setString(4, entity.getDetail());
                 statement.setInt(5, entity.getTransactionCategoryId());
             }
