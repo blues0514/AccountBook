@@ -31,21 +31,6 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         return "select * from [Transaction] where TransactionId = ?";
     }
 
-    public ArrayList<Transaction> getByIsIncome(int isIncome) {
-        //language=TSQL
-        String query = "SELECT a.*,b.IsIncome FROM [Transaction] a,TransactionCategory b " +
-                "WHERE a.TransactionCategoryId=b.TransactionCategoryId " +
-                "and b.IsIncome =?";
-
-        return getMany(query, new ParameterSetter() {
-            @SneakyThrows
-            @Override
-            public void setValue(PreparedStatement statement) {
-                statement.setInt(1,isIncome);
-            }
-        });
-    }
-
     @Override
     protected String deleteByKeyQuery() {
         //language=TSQL
@@ -116,24 +101,27 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         });
     }
 
-    public ArrayList<Transaction> getByMonth(int month) {
+    public ArrayList<Transaction> getByMonth(int memberId, int accountId, int month) {
         //language=TSQL
-        String query ="SELECT * FROM [Transaction] WHERE MONTH(Date)=?";
+        String query ="SELECT * FROM [Transaction] t, Member m WHERE MONTH(Date)=? " +
+                "and m.MemberId = ? and AccountId = ?";
 
         return getMany(query, new ParameterSetter() {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
                 statement.setInt(1,month);
+                statement.setInt(2,memberId);
+                statement.setInt(3,accountId);
             }
         });
     }
 
-    public ArrayList<Transaction> getByDay(int month, int startDay, int endDay) {
+    public ArrayList<Transaction> getByPeriod(int memberId, int accountId, int month, int startDay, int endDay) {
         //language=TSQL
         String query = "SELECT * FROM [Transaction] t, Member m, Account a WHERE MONTH(Date)=? AND " +
                 "DAY(Date)>=? and DAY(Date)< ? and t.AccountId = a.AccountId " +
-                "and a.MemberId = m.MemberId";
+                "and a.MemberId = m.MemberId and m.MemberId = ? and t.AccountId = ?";
         return getMany(query, new ParameterSetter() {
             @SneakyThrows
             @Override
@@ -141,21 +129,30 @@ public class TransactionDao extends IntEntityDao<Transaction> {
                 statement.setInt(1,month);
                 statement.setInt(2,startDay);
                 statement.setInt(3,endDay);
+                statement.setInt(4,memberId);
+                statement.setInt(5,accountId);
             }
         });
     }
 
-    public ArrayList<Transaction> getTransactions(int month){
+    public ArrayList<Transaction> getByIsIncome(int memberId, int accountId, int isIncome) {
         //language=TSQL
-        String query = "select *\n" +
-                "from [Transaction]\n" +
-                "where MONTH(Date) = ?";
+        String query = "SELECT t.*,c.IsIncome " +
+                "FROM [Transaction] t,TransactionCategory c, Member m, Account a " +
+                "WHERE t.TransactionCategoryId=c.TransactionCategoryId " +
+                "and t.AccountId = a.AccountId and a.MemberId = m.MemberId " +
+                "and c.IsIncome =? and m.MemberId = ? and a.AccountId = ?";
+
         return getMany(query, new ParameterSetter() {
             @SneakyThrows
             @Override
-            public void setValue(PreparedStatement preparedStatement) {
-                preparedStatement.setInt(1,month);
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1,isIncome);
+                statement.setInt(2,memberId);
+                statement.setInt(3,accountId);
+
             }
         });
     }
+
 }
