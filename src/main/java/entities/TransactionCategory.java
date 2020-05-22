@@ -9,6 +9,7 @@ public class TransactionCategory extends Entity {
     private String name;
     private boolean isIncome;
 
+
     @Override
     public String getKeyText() {
         return null;

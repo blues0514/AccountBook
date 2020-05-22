@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 
 public class TransactionDao extends IntEntityDao<Transaction> {
@@ -31,38 +32,27 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         return "select * from [Transaction] where TransactionId = ?";
     }
 
-    public ArrayList<Transaction> getByIsIncome(int isIncome) {
-        //language=TSQL
-        String query = "SELECT a.*,b.IsIncome FROM [Transaction] a,TransactionCategory b " +
-                "WHERE a.TransactionCategoryId=b.TransactionCategoryId " +
-                "and b.IsIncome =?";
-
-        return getMany(query, new ParameterSetter() {
-            @SneakyThrows
-            @Override
-            public void setValue(PreparedStatement statement) {
-                statement.setInt(1,isIncome);
-            }
-        });
-    }
-
     @Override
     protected String deleteByKeyQuery() {
         //language=TSQL
         return "delete [Transaction] where TransactionId = ?";
     }
 
+    //modified
     @SneakyThrows
     @Override
     protected Transaction readEntity(ResultSet resultSet) {
         Transaction entity = new Transaction();
-
+        ResultSetMetaData resultSetMetaData =
+                resultSet.getMetaData();
         entity.setTransactionId(resultSet.getInt(1));
         entity.setAccountId(resultSet.getInt(2));
         entity.setAmount(resultSet.getInt(3));
         entity.setDate(resultSet.getDate(4));
         entity.setDetail(resultSet.getString(5));
         entity.setTransactionCategoryId(resultSet.getInt(6));
+        if(resultSetMetaData.getColumnCount()>6)
+         entity.setIncome(resultSet.getBoolean(7));
 
         return entity;
     }
@@ -88,11 +78,9 @@ public class TransactionDao extends IntEntityDao<Transaction> {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
-//                statement.setInt(1, entity.getAccountId());
-                statement.setInt(2, entity.getAmount());
-//                statement.setDate(3, entity.getDate());
-                statement.setString(4, entity.getDetail());
-                statement.setInt(5, entity.getTransactionCategoryId());
+                statement.setInt(1, entity.getAmount());
+                statement.setString(2, entity.getDetail());
+                statement.setInt(3, entity.getTransactionCategoryId());
             }
         });
     }
@@ -129,11 +117,12 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         });
     }
 
-    public ArrayList<Transaction> getByDay(int memeberId, int month, int startDay, int endDay) {
+    //modified
+    public ArrayList<Transaction> getByPeriod(int memeberId, int month, int startDay, int endDay) {
         //language=TSQL
-        String query = "SELECT *FROM [Transaction] t, Member m, Account a " +
+        String query = "SELECT * FROM [Transaction] t, Member m, Account a " +
                 "WHERE MONTH(Date)=? AND " +
-                "DAY(Date)>=? and DAY(Date)<? and t.AccountId=a.AccountId " +
+                "DAY(Date)>=? and DAY(Date)<=? and t.AccountId=a.AccountId " +
                 "and a.MemberId=m.MemberId and m.MemberId=?";
         return getMany(query, new ParameterSetter() {
             @SneakyThrows
@@ -143,6 +132,21 @@ public class TransactionDao extends IntEntityDao<Transaction> {
                 statement.setInt(2,startDay);
                 statement.setInt(3,endDay);
                 statement.setInt(4,memeberId);
+            }
+        });
+    }
+
+    public ArrayList<Transaction> getByIsIncome(int isIncome) {
+        //language=TSQL
+        String query = "SELECT a.*,b.IsIncome FROM [Transaction] a,TransactionCategory b " +
+                "WHERE a.TransactionCategoryId=b.TransactionCategoryId " +
+                "and b.IsIncome =?";
+
+        return getMany(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1,isIncome);
             }
         });
     }

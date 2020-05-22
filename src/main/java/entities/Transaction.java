@@ -14,6 +14,7 @@ public class Transaction extends Entity {
     private Date date;
     private String detail;
     private int transactionCategoryId;
+    private boolean isIncome;
 
     @Override
     public String getKeyText() {
