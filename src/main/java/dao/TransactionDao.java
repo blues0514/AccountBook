@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 
 public class TransactionDao extends IntEntityDao<Transaction> {
