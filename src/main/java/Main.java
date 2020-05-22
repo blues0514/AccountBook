@@ -72,7 +72,7 @@ public class Main {
         }
     }
 
-    static Member getUser(Member member) {
+    private static Member getUser(Member member) {
         Scanner sc = new Scanner(System.in);
         boolean login = true;
 
@@ -98,7 +98,7 @@ public class Main {
         return member;
     }
 
-    static int selectAccount(int memberId) {
+    private static int selectAccount(int memberId) {
         Scanner sc = new Scanner(System.in);
         ArrayList<Account> accounts =
                 AccountDao.getInstance().getAccountNumbers(memberId);
@@ -113,7 +113,7 @@ public class Main {
         return accounts.get(num).getAccountId();
     }
 
-    public static void transactionInquiry(int memberId, int accountId, int isIncome) {
+    private static void transactionInquiry(int memberId, int accountId, int isIncome) {
         ArrayList<Transaction> transactions =
                 TransactionDao.getInstance().getByIsIncome(memberId,accountId, isIncome);
         for (Transaction transaction : transactions) {
