@@ -22,10 +22,8 @@ public class Main {
         System.out.printf("%s님 환영합니다.\n목표 수입 금액 : %d\n",
                 member.getId(), member.getTargetAmount());
 
-        System.out.println("계좌를 선택해주세요 (왼쪽부터 1)");
+        System.out.println("계좌를 선택해주세요");
         int usingAccountId = selectAccount(usingMemberId);
-        System.out.println(usingAccountId);
-
 
         System.out.println("이용 가능 항목");
         usingService(usingMemberId, usingAccountId);
@@ -104,10 +102,13 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         ArrayList<Account> accounts =
                 AccountDao.getInstance().getAccountNumbers(memberId);
-        for (Account account : accounts)
-            System.out.print(account.getAccountNumber() + " ");
-        System.out.println();
-        int num = sc.nextInt()-1;
+
+        int i = 1;
+        for (Account account : accounts) {
+            System.out.printf("%d. %s\n", i, account.getAccountNumber());
+            i++;
+        }
+        int num = sc.nextInt() - 1;
 
         return accounts.get(num).getAccountId();
     }
