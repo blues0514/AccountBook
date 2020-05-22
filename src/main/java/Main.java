@@ -15,13 +15,17 @@ public class Main {
         ConnectionString.getInstance().initialize("jdbc:sqlserver://127.0.0.1;database=AccountBook;user=sa;password=1234");
 
         Member member = new Member();
-        int usingMemberId = member.getMemberId();
 
         getUser(member);
-        System.out.printf("%s님 환영합니다.\n", member.getId());
+        int usingMemberId = member.getMemberId();
 
-        System.out.println("계좌를 선택해주세요 (왼쪽부터 0)");
+        System.out.printf("%s님 환영합니다.\n목표 수입 금액 : %d\n",
+                member.getId(), member.getTargetAmount());
+
+        System.out.println("계좌를 선택해주세요 (왼쪽부터 1)");
         int usingAccountId = selectAccount(usingMemberId);
+        System.out.println(usingAccountId);
+
 
         System.out.println("이용 가능 항목");
         usingService(usingMemberId, usingAccountId);
@@ -76,9 +80,9 @@ public class Main {
 
         while (login) {
             try {
-                System.out.println("id");
+                System.out.println("ID 입력");
                 String userId = sc.nextLine();
-                System.out.println("pw");
+                System.out.println("Password 입력");
                 String userPw = sc.nextLine();
 
                 Member loginUser = MemberDao.getInstance().login(userId, userPw);
