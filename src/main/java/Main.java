@@ -42,8 +42,8 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("1.월별 2.기간 지정");
-                    int menuBy3 = sc.nextInt();
-                    switch (menuBy3) {
+                    int numBy3 = sc.nextInt();
+                    switch (numBy3) {
                         case 1:
                             System.out.println("원하는 월 입력");
                             int hopeMonth = sc.nextInt();
@@ -103,7 +103,7 @@ public class Main {
         for (Account account : accounts)
             System.out.print(account.getAccountNumber() + " ");
         System.out.println();
-        int num = sc.nextInt();
+        int num = sc.nextInt()-1;
 
         return accounts.get(num).getAccountId();
     }
