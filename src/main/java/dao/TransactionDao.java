@@ -99,6 +99,24 @@ public class TransactionDao extends IntEntityDao<Transaction> {
         });
     }
 
+    public ArrayList<Transaction> getByPeriod(int memberId, int accountId, int month, int startDay, int endDay) {
+        //language=TSQL
+        String query = "SELECT * FROM [Transaction] t, Member m, Account a WHERE MONTH(Date)=? AND " +
+                "DAY(Date)>=? and DAY(Date)<= ? and t.AccountId = a.AccountId " +
+                "and a.MemberId = m.MemberId and m.MemberId = ? and t.AccountId = ?";
+        return getMany(query, new ParameterSetter() {
+            @SneakyThrows
+            @Override
+            public void setValue(PreparedStatement statement) {
+                statement.setInt(1,month);
+                statement.setInt(2,startDay);
+                statement.setInt(3,endDay);
+                statement.setInt(4,memberId);
+                statement.setInt(5,accountId);
+            }
+        });
+    }
+
     public ArrayList<Transaction> getByMonth(int memberId, int accountId, int month) {
         //language=TSQL
         String query ="SELECT * FROM [Transaction] t, Member m WHERE MONTH(Date)=? " +
@@ -111,24 +129,6 @@ public class TransactionDao extends IntEntityDao<Transaction> {
                 statement.setInt(1,month);
                 statement.setInt(2,memberId);
                 statement.setInt(3,accountId);
-            }
-        });
-    }
-
-    public ArrayList<Transaction> getByPeriod(int memberId, int accountId, int month, int startDay, int endDay) {
-        //language=TSQL
-        String query = "SELECT * FROM [Transaction] t, Member m, Account a WHERE MONTH(Date)=? AND " +
-                "DAY(Date)>=? and DAY(Date)< ? and t.AccountId = a.AccountId " +
-                "and a.MemberId = m.MemberId and m.MemberId = ? and t.AccountId = ?";
-        return getMany(query, new ParameterSetter() {
-            @SneakyThrows
-            @Override
-            public void setValue(PreparedStatement statement) {
-                statement.setInt(1,month);
-                statement.setInt(2,startDay);
-                statement.setInt(3,endDay);
-                statement.setInt(4,memberId);
-                statement.setInt(5,accountId);
             }
         });
     }
