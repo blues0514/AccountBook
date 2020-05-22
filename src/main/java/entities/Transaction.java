@@ -20,4 +20,5 @@ public class Transaction extends Entity {
     public String getKeyText() {
         return null;
     }
+//
 }
