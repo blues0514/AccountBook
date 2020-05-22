@@ -134,6 +134,4 @@ public class Main {
                     transaction.getDate(), transaction.getAmount(), transaction.getDetail());
         }
     }
-
-
 }

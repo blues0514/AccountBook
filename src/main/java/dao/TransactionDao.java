@@ -73,9 +73,7 @@ public class TransactionDao extends IntEntityDao<Transaction> {
             @SneakyThrows
             @Override
             public void setValue(PreparedStatement statement) {
-//                statement.setInt(1, entity.getAccountId());
                 statement.setInt(2, entity.getAmount());
-//                statement.setDate(3, entity.getDate());
                 statement.setString(4, entity.getDetail());
                 statement.setInt(5, entity.getTransactionCategoryId());
             }
@@ -150,9 +148,7 @@ public class TransactionDao extends IntEntityDao<Transaction> {
                 statement.setInt(1,isIncome);
                 statement.setInt(2,memberId);
                 statement.setInt(3,accountId);
-
             }
         });
     }
-
 }
